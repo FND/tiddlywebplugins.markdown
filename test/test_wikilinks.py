@@ -47,3 +47,15 @@ def test_no_wiki():
     assert '(<a href="HtmlJavascript">HtmlJavascript</a> in parens)' in output
     assert '(parens around <a href="HtmlJavascript">HtmlJavascript</a>)' in output
 
+
+def test_escaping():
+    environ = {'tiddlyweb.config': {'markdown.wiki_link_base': ''}}
+
+    tiddler = Tiddler('world')
+    tiddler.text = "foo WikiWord bar ~EscapedWikiWord baz"
+    output = render(tiddler, environ)
+    assert '<a href="WikiWord">WikiWord</a>' in output
+    assert 'href="~EscapedWikiWord"' not in output
+    assert 'href="EscapedWikiWord"' not in output
+    assert 'EscapedWikiWord' in output
+    assert '~EscapedWikiWord' not in output
